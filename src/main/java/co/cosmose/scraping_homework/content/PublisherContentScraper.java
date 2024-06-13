@@ -53,7 +53,7 @@ public class PublisherContentScraper {
         }
     }
 
-    private PublisherContent mapToPublisherContent(Element element) {
+    PublisherContent mapToPublisherContent(Element element) {
         String articleUrl = element.select("link").text(); // returns empty string if null
         String title = element.select("title").text();
         String author = element.select("dc|creator").text();
@@ -75,22 +75,22 @@ public class PublisherContentScraper {
 
     private void logIfEmptyContent(PublisherContent content) {
         if (content.getArticleUrl().isEmpty()) {
-            log.debug("Url is missing for content with title: {}", content.getTitle());
+            log.error("Url is missing for content with title: {}", content.getTitle());
         }
         if (content.getTitle().isEmpty()) {
-            log.debug("Title is missing for articleUrl: {}", content.getArticleUrl());
+            log.error("Title is missing for articleUrl: {}", content.getArticleUrl());
         }
         if (content.getAuthor().isEmpty()) {
-            log.debug("Author is missing for articleUrl: {}", content.getArticleUrl());
+            log.error("Author is missing for articleUrl: {}", content.getArticleUrl());
         }
         if (content.getHtmlContent().isEmpty()) {
-            log.debug("Html content is missing for articleUrl: {}", content.getArticleUrl());
+            log.error("Html content is missing for articleUrl: {}", content.getArticleUrl());
         }
         if (content.getOriginalContent().isEmpty()) {
-            log.debug("Original content is missing for articleUrl: {}", content.getArticleUrl());
+            log.error("Original content is missing for articleUrl: {}", content.getArticleUrl());
         }
         if (content.getMainImageUrl().isEmpty()) {
-            log.debug("Image url is missing for articleUrl: {}", content.getArticleUrl());
+            log.error("Image url is missing for articleUrl: {}", content.getArticleUrl());
         }
     }
 }

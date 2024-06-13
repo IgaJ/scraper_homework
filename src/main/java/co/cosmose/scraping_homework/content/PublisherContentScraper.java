@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,12 +19,14 @@ public class PublisherContentScraper {
 
     private final PublisherContentRepository publisherContentRepository;
 
+    @Scheduled(fixedRate = 3600000)
     public void scrapeAndSave() {
         try {
             Document document = Jsoup.connect("https://connect.thairath.co.th/ws/kaikai/content/mirror").get();
             List<Element> items = document.select("item");
             List<PublisherContent> contents = new ArrayList<>();
             for (Element item : items) {
+                // no NPE validation or Optional, element.select.text() never returns a null
                 PublisherContent content = mapToPublisherContent(item);
                 contents.add(content);
             }
@@ -34,12 +37,12 @@ public class PublisherContentScraper {
                     }
                 }
             } catch(IOException e){
-                log.debug("Error during scraping" + e.getMessage());
+                log.error("Error during scraping" + e.getMessage());
             }
         }
 
     private PublisherContent mapToPublisherContent(Element element) {
-        String articleUrl = element.select("link").text();
+        String articleUrl = element.select("link").text(); // returns empty string if null
         String title = element.select("title").text();
         String author = element.select("dc|creator").text();
         String htmlContent = element.select("description").text();
